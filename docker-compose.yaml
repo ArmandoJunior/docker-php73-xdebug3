@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+
+  app:
+    build: .
+    container_name: xdebug-app
+    environment:
+      - XDEBUG_CONFIG=client_host=172.17.0.1 client_port=9003 start_with_request=yes log=/var/log/xdebug.log
+      - XDEBUG_MODE=debug
+      - XDEBUG_SESSION=phpstorm
+      - PHP_IDE_CONFIG=serverName=server-docker
+#      O server-docker é uma configuração em PHP -> Server em que você colocará e host=localhost porta=8000 e o path mappings pegando a raiz do projeto e apontando pra /var/www
+    volumes:
+      - .:/var/www
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+    expose:
+      - 9003
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  nginx:
+    build: .docker/nginx
+    container_name: xdebug-nginx
+    restart: always
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www
+    networks:
+      - app-network
+    depends_on:
+      - app
+  db:
+    build: ./.docker/mysql
+    container_name: xdebug-db
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=database
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

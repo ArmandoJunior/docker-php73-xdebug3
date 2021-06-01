@@ -1,0 +1,10 @@
+{
+    "name": "root/www",
+    "authors": [
+        {
+            "name": "Armando N Junior",
+            "email": "armandojrn@hotmail.com"
+        }
+    ],
+    "require": {}
+}
