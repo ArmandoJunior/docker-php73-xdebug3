@@ -1,4 +1,5 @@
-FROM php:7.3.6-fpm-alpine3.9
+#FROM php:7.3.6-fpm-alpine3.9
+FROM php:7.4.20-fpm-alpine3.13
 
 WORKDIR /var/www
 RUN rm -rf /var/www/html
